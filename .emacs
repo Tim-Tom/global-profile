@@ -43,7 +43,6 @@
  ;; If there is more than one, they won't work right.
  )
 
-
 ;; Kill the splash screen
 (setq inhibit-splash-screen t)
 
@@ -66,27 +65,27 @@
 (add-hook 'shell-mode-hook 'ansi-color-for-comint-mode-on)
 (add-hook 'shell-mode-hook '(lambda () (setq comint-process-echoes t)))
 
-; (setq auto-mode-alist
-;       (cons '("\\.mod$" . ampl-mode) auto-mode-alist))
-; (setq auto-mode-alist
-;       (cons '("\\.dat$" . ampl-mode) auto-mode-alist))
-; (setq auto-mode-alist
-;       (cons '("\\.ampl$" . ampl-mode) auto-mode-alist))
-; (setq interpreter-mode-alist
-;       (cons '("ampl" . ampl-mode)
-;             interpreter-mode-alist))
+(add-to-list 'load-path "~/.emacs.d")
+(load "ampl-mode")
 
-; (add-to-list 'load-path "~/.emacs.d/elpa")
-; (load "ampl-mode")
+(setq auto-mode-alist
+      (cons '("\\.mod$" . ampl-mode) auto-mode-alist))
+(setq auto-mode-alist
+      (cons '("\\.dat$" . ampl-mode) auto-mode-alist))
+(setq auto-mode-alist
+      (cons '("\\.ampl$" . ampl-mode) auto-mode-alist))
+(setq interpreter-mode-alist
+      (cons '("ampl" . ampl-mode)
+            interpreter-mode-alist))
 
 ;; Enable syntax coloring
-; (add-hook 'ampl-mode-hook 'turn-on-font-lock)
+(add-hook 'ampl-mode-hook 'turn-on-font-lock)
 
-; (setq ampl-auto-close-parenthesis nil)
-; (setq ampl-auto-close-brackets nil)
-; (setq ampl-auto-close-curlies nil)
-; (setq ampl-auto-close-double-quote nil)
-; (setq ampl-auto-close-single-quote nil)
+(setq ampl-auto-close-parenthesis nil)
+(setq ampl-auto-close-brackets nil)
+(setq ampl-auto-close-curlies nil)
+(setq ampl-auto-close-double-quote nil)
+(setq ampl-auto-close-single-quote nil)
 
 (add-to-list 'custom-theme-load-path "~/.emacs.d/emacs-color-theme-solarized")
 (load-theme 'solarized)
