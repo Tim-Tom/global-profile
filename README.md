@@ -1,2 +1,2 @@
 # global-profile
-Stores common configuration items across systems so I don't have to keep remembering these thgings
+Stores common configuration items across systems so I don't have to keep remembering these things
