@@ -13,3 +13,5 @@
 	trustExitCode = true
 [difftool]
 	prompt = 0
+[push]
+	default = simple
