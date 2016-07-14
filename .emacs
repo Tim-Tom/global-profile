@@ -65,7 +65,7 @@
 (add-hook 'shell-mode-hook 'ansi-color-for-comint-mode-on)
 (add-hook 'shell-mode-hook '(lambda () (setq comint-process-echoes t)))
 
-(add-to-list 'load-path "~/.emacs.d")
+(add-to-list 'load-path "~/.emacs.d/lisp")
 (load "ampl-mode")
 
 (setq auto-mode-alist
@@ -87,7 +87,7 @@
 (setq ampl-auto-close-double-quote nil)
 (setq ampl-auto-close-single-quote nil)
 
-(add-to-list 'custom-theme-load-path "~/.emacs.d/emacs-color-theme-solarized")
+(add-to-list 'custom-theme-load-path "~/.emacs.d/lisp/emacs-color-theme-solarized")
 (load-theme 'solarized)
 
 (server-start)
