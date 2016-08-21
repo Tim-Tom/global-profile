@@ -79,3 +79,7 @@ get_timestamp()
 export PS1='\n$(get_timestamp)\n\u:\W> '
 
 export EDITOR='emacsclient -a /usr/bin/vim'
+
+if [ -f ~/.bashrc-local ]; then
+    . ~/.bashrc-local
+fi

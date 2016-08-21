@@ -3,7 +3,8 @@
 
 (setq-default
       indent-tabs-mode nil
-      js-indent-level 2)
+      js-indent-level 2
+      fill-column 90)
 
 ;; Settings
 (custom-set-variables
@@ -11,13 +12,18 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(ada-auto-case nil)
+ '(ada-case-strict nil)
  '(comint-input-ring-size 1024)
  '(custom-safe-themes
    (quote
     ("8db4b03b9ae654d4a57804286eb3e332725c84d7cdab38463cb6b97d5762ad26" default)))
  '(frame-background-mode (quote dark))
  '(menu-bar-mode nil)
- '(package-archives (quote (("gnu" . "http://elpa.gnu.org/packages/") ("marmalade" . "http://marmalade-repo.org/packages/"))))
+ '(package-archives
+   (quote
+    (("gnu" . "http://elpa.gnu.org/packages/")
+     ("marmalade" . "http://marmalade-repo.org/packages/"))))
  '(scroll-bar-mode nil)
  '(show-paren-mode t)
  '(tool-bar-mode nil)
@@ -48,9 +54,13 @@
 
 ;; Window Movement
 (global-set-key [M-left] 'windmove-left)
+(global-set-key (kbd "C-c <left>") 'windmove-left)
 (global-set-key [M-right] 'windmove-right)
+(global-set-key (kbd "C-c <right>") 'windmove-right)
 (global-set-key [M-up] 'windmove-up)
+(global-set-key (kbd "C-c <up>") 'windmove-up)
 (global-set-key [M-down] 'windmove-down)
+(global-set-key (kbd "C-c <down>") 'windmove-down)
 
 ;; cperl-mode is preferred to perl-mode
 (defalias 'perl-mode 'cperl-mode)
@@ -59,6 +69,21 @@
   "Generates a guid in the format of microsoft"
   (interactive)
   (insert (format "{%X%X%X%X%X%X%X%X-%X%X%X%X-%X%X%X%X-%X%X%X%X-%X%X%X%X%X%X%X%X%X%X%X%X}" (random 16) (random 16) (random 16) (random 16) (random 16) (random 16) (random 16) (random 16) (random 16) (random 16) (random 16) (random 16) (random 16) (random 16) (random 16) (random 16) (random 16) (random 16) (random 16) (random 16) (random 16) (random 16) (random 16) (random 16) (random 16) (random 16) (random 16) (random 16) (random 16) (random 16) (random 16) (random 16))))
+
+(defun launch-mysql ()
+  "Launches a mysql server with the general log output and tailed"
+  (interactive)
+  (let ((general-log "/var/log/mysql/mysql.log")
+        (error-log "/var/log/mysql/error.log"))
+    (if (get-buffer "*mysql-log*") (kill-buffer "*mysql-log*"))
+    (find-file general-log)
+    (rename-buffer "*mysql-log*")
+    (auto-revert-tail-mode 1)
+    (find-file error-log)
+    (if (get-buffer "*mysql-error-log*") (kill-buffer "*mysql-error-log*"))
+    (rename-buffer "*mysql-error-log*")
+    (auto-revert-tail-mode 1))
+  )
 
 (add-to-list 'comint-output-filter-functions 'ansi-color-process-output)
 (add-to-list 'comint-output-filter-functions 'comint-strip-ctrl-m)
@@ -94,3 +119,9 @@
 
 (put 'dired-find-alternate-file 'disabled nil)
 (put 'upcase-region 'disabled nil)
+
+(add-hook 'js-mode-hook (lambda() (setq compile-command (concat "eslint --format unix " (file-name-nondirectory buffer-file-name)))))
+
+(autoload 'forth-mode "gforth.el")
+(autoload 'forth-block-mode "gforth.el")
+(add-to-list 'auto-mode-alist '("\\.fs$" . forth-mode))
