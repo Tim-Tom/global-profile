@@ -15,6 +15,7 @@
  '(ada-auto-case nil)
  '(ada-case-strict nil)
  '(comint-input-ring-size 1024)
+ '(cperl-indent-parens-as-block t)
  '(custom-safe-themes
    (quote
     ("8db4b03b9ae654d4a57804286eb3e332725c84d7cdab38463cb6b97d5762ad26" default)))
@@ -23,7 +24,8 @@
  '(package-archives
    (quote
     (("gnu" . "http://elpa.gnu.org/packages/")
-     ("marmalade" . "http://marmalade-repo.org/packages/"))))
+     ("marmalade" . "http://marmalade-repo.org/packages/")
+     ("melpa" . "https://melpa.org/packages/"))))
  '(scroll-bar-mode nil)
  '(show-paren-mode t)
  '(tool-bar-mode nil)
@@ -41,6 +43,8 @@
 (column-number-mode 1)
 
 (setenv "NODE_NO_READLINE" "1")
+(setenv "PAGER" "cat")
+(setenv "DEBIAN_FRONTEND" "Readline")
 
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
@@ -85,6 +89,18 @@
     (auto-revert-tail-mode 1))
   )
 
+(require 'sql)
+(add-hook 'sql-mode-hook
+          (lambda ()
+            (modify-syntax-entry ?\\ "\\" sql-mode-syntax-table)))
+
+(defun align-sql-create ()
+  "Aligns SQL create table statements"
+  (interactive)
+  (align-regexp (region-beginning) (region-end) "\\(\s\s*\\)\\(\\bbigint\\b\\|\\bbigserial\\b\\|\\bbit\\b\\|\\bbool\\b\\|\\bboolean\\b\\|\\bbox\\b\\|\\bbytea\\b\\|\\bchar\\b\\|\\bcharacter\\b\\|\\bcidr\\b\\|\\bcircle\\b\\|\\bdate\\b\\|\\bdatetime\\b\\|\\bdecimal\\b\\|\\bdouble\\b\\|\\bfloat4\\b\\|\\bfloat8\\b\\|\\binet\\b\\|\\bint\\b\\|\\bint2\\b\\|\\bint4\\b\\|\\bint8\\b\\|\\binteger\\b\\|\\binterval\\b\\|\\bjson\\b\\|\\bjsonb\\b\\|\\bline\\b\\|\\blseg\\b\\|\\bmacaddr\\b\\|\\bmoney\\b\\|\\bnumeric\\b\\|\\bpath\\b\\|\\bpg_lsn\\b\\|\\bpoint\\b\\|\\bpolygon\\b\\|\\breal\\b\\|\\bserial\\b\\|\\bserial2\\b\\|\\bserial4\\b\\|\\bserial8\\b\\|\\bsmallint\\b\\|\\bsmallserial\\b\\|\\btext\\b\\|\\btime\\b\\|\\btimestamp\\b\\|\\btimestamptz\\b\\|\\btimetz\\b\\|\\btsquery\\b\\|\\btsvector\\b\\|\\btxid_snapshot\\b\\|\\buuid\\b\\|\\bvarbit\\b\\|\\bvarchar\\b\\|\\bxml\\b\\)")
+  (align-regexp (region-beginning) (region-end) "\\(\s\s*\\)\\(NOT NULL\\|NULL\\)")
+  (align-regexp (region-beginning) (region-end) "\\(\s\s*\\)NULL"))
+
 (add-to-list 'comint-output-filter-functions 'ansi-color-process-output)
 (add-to-list 'comint-output-filter-functions 'comint-strip-ctrl-m)
 (add-hook 'shell-mode-hook 'ansi-color-for-comint-mode-on)
@@ -124,4 +140,3 @@
 
 (autoload 'forth-mode "gforth.el")
 (autoload 'forth-block-mode "gforth.el")
-(add-to-list 'auto-mode-alist '("\\.fs$" . forth-mode))
