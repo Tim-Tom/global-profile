@@ -64,6 +64,7 @@ if ! shopt -oq posix; then
 fi
 
 source ~/perl5/perlbrew/etc/bashrc
+export PERL_UNICODE=AS
 
 get_timestamp()
 {
