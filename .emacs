@@ -1,4 +1,11 @@
 ;; backup
+
+;; Added by Package.el.  This must come before configurations of
+;; installed packages.  Don't delete this line.  If you don't want it,
+;; just comment it out by adding a semicolon to the start of the line.
+;; You may delete these explanatory comments.
+(package-initialize)
+
 (setq make-backup-files nil)
 
 (setq-default
@@ -21,10 +28,11 @@
     ("8db4b03b9ae654d4a57804286eb3e332725c84d7cdab38463cb6b97d5762ad26" default)))
  '(frame-background-mode (quote dark))
  '(menu-bar-mode nil)
+ '(nxml-child-indent 4)
+ '(org-src-fontify-natively t)
  '(package-archives
    (quote
     (("gnu" . "http://elpa.gnu.org/packages/")
-     ("marmalade" . "http://marmalade-repo.org/packages/")
      ("melpa" . "https://melpa.org/packages/"))))
  '(scroll-bar-mode nil)
  '(show-paren-mode t)
@@ -65,6 +73,8 @@
 (global-set-key (kbd "C-c <up>") 'windmove-up)
 (global-set-key [M-down] 'windmove-down)
 (global-set-key (kbd "C-c <down>") 'windmove-down)
+(global-set-key (kbd "C-/") 'comment-or-uncomment-region)
+(global-set-key (kbd "C-c o") 'browse-url-at-point)
 
 ;; cperl-mode is preferred to perl-mode
 (defalias 'perl-mode 'cperl-mode)
@@ -89,6 +99,14 @@
     (auto-revert-tail-mode 1))
   )
 
+(defun sudo-find-file (file-name)
+  "Like find file, but opens the file as root."
+  (interactive "FSudo Find File: ")
+  (let ((tramp-file-name (concat "/sudo::" (expand-file-name file-name))))
+    (find-file tramp-file-name)))
+
+(global-set-key (kbd "C-x C-r") 'sudo-find-file)
+
 (require 'sql)
 (add-hook 'sql-mode-hook
           (lambda ()
@@ -97,9 +115,14 @@
 (defun align-sql-create ()
   "Aligns SQL create table statements"
   (interactive)
-  (align-regexp (region-beginning) (region-end) "\\(\s\s*\\)\\(\\bbigint\\b\\|\\bbigserial\\b\\|\\bbit\\b\\|\\bbool\\b\\|\\bboolean\\b\\|\\bbox\\b\\|\\bbytea\\b\\|\\bchar\\b\\|\\bcharacter\\b\\|\\bcidr\\b\\|\\bcircle\\b\\|\\bdate\\b\\|\\bdatetime\\b\\|\\bdecimal\\b\\|\\bdouble\\b\\|\\bfloat4\\b\\|\\bfloat8\\b\\|\\binet\\b\\|\\bint\\b\\|\\bint2\\b\\|\\bint4\\b\\|\\bint8\\b\\|\\binteger\\b\\|\\binterval\\b\\|\\bjson\\b\\|\\bjsonb\\b\\|\\bline\\b\\|\\blseg\\b\\|\\bmacaddr\\b\\|\\bmoney\\b\\|\\bnumeric\\b\\|\\bpath\\b\\|\\bpg_lsn\\b\\|\\bpoint\\b\\|\\bpolygon\\b\\|\\breal\\b\\|\\bserial\\b\\|\\bserial2\\b\\|\\bserial4\\b\\|\\bserial8\\b\\|\\bsmallint\\b\\|\\bsmallserial\\b\\|\\btext\\b\\|\\btime\\b\\|\\btimestamp\\b\\|\\btimestamptz\\b\\|\\btimetz\\b\\|\\btsquery\\b\\|\\btsvector\\b\\|\\btxid_snapshot\\b\\|\\buuid\\b\\|\\bvarbit\\b\\|\\bvarchar\\b\\|\\bxml\\b\\)")
+  (align-regexp (region-beginning) (region-end) "\\(\s\s*\\)\\(\\bbigint\\b\\|\\bbigserial\\b\\|\\bbit\\b\\|\\bbool\\b\\|\\bboolean\\b\\|\\bbox\\b\\|\\bbytea\\b\\|\\bchar\\b\\|\\bcharacter\\b\\|\\bcidr\\b\\|\\bcircle\\b\\|\\bdate\\b\\|\\bdatetime\\b\\|\\bdecimal\\b\\|\\bdouble\\b\\|\\bfloat4\\b\\|\\bfloat8\\b\\|\\binet\\b\\|\\bint\\b\\|\\bint2\\b\\|\\bint4\\b\\|\\bint8\\b\\|\\binteger\\b\\|\\binterval\\b\\|\\bjson\\b\\|\\bjsonb\\b\\|\\bline\\b\\|\\blseg\\b\\|\\bmacaddr\\b\\|\\bmoney\\b\\|\\bnumeric\\b\\|\\bpath\\b\\|\\bpg_lsn\\b\\|\\bpoint\\b\\|\\bpolygon\\b\\|\\breal\\b\\|\\bserial\\b\\|\\bserial2\\b\\|\\bserial4\\b\\|\\bserial8\\b\\|\\bsmallint\\b\\|\\bsmallserial\\b\\|\\btext\\b\\|\\btime\\b\\|\\btimestamp\\b\\|\\btimestamptz\\b\\|\\btimetz\\b\\|\\btsquery\\b\\|\\btsvector\\b\\|\\btxid_snapshot\\b\\|\\buuid\\b\\|\\bvarbit\\b\\|\\bvarchar\\b\\|\\bxml\\b\\|\\bnumber\\b\\|\\bvarchar2\\b\\|\\bclob\\b\\)")
   (align-regexp (region-beginning) (region-end) "\\(\s\s*\\)\\(NOT NULL\\|NULL\\)")
   (align-regexp (region-beginning) (region-end) "\\(\s\s*\\)NULL"))
+
+(require 'ansi-color)
+(defun display-ansi-colors ()
+  (interactive)
+  (ansi-color-apply-on-region (point-min) (point-max)))
 
 (add-to-list 'comint-output-filter-functions 'ansi-color-process-output)
 (add-to-list 'comint-output-filter-functions 'comint-strip-ctrl-m)
@@ -137,6 +160,7 @@
 (put 'upcase-region 'disabled nil)
 
 (add-hook 'js-mode-hook (lambda() (setq compile-command (concat "eslint --format unix " (file-name-nondirectory buffer-file-name)))))
+; (add-hook 'js-mode-hook (lambda() (setq compile-command (concat "eslint --format unix " (file-name-nondirectory buffer-file-name)))))
 
 (autoload 'forth-mode "gforth.el")
 (autoload 'forth-block-mode "gforth.el")
