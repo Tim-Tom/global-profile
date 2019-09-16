@@ -34,10 +34,20 @@
    (quote
     (("gnu" . "http://elpa.gnu.org/packages/")
      ("melpa" . "https://melpa.org/packages/"))))
+ '(package-selected-packages
+   (quote
+    (go-mode rust-mode ssh yaml-mode magit color-theme-solarized ada-mode ack)))
  '(scroll-bar-mode nil)
  '(show-paren-mode t)
  '(tool-bar-mode nil)
  '(transient-mark-mode nil))
+
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(default ((t (:inherit nil :stipple nil :background "#002b36" :foreground "#839496" :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight normal :height 180 :width normal :foundry "PfEd" :family "DejaVu Sans Mono")))))
 
 (setq font-lock-maximum-decoration t)
 (setq visible-bell t)
@@ -54,13 +64,6 @@
 (setenv "PAGER" "cat")
 (setenv "DEBIAN_FRONTEND" "Readline")
 
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- )
-
 ;; Kill the splash screen
 (setq inhibit-splash-screen t)
 
@@ -75,6 +78,7 @@
 (global-set-key (kbd "C-c <down>") 'windmove-down)
 (global-set-key (kbd "C-/") 'comment-or-uncomment-region)
 (global-set-key (kbd "C-c o") 'browse-url-at-point)
+(global-set-key (kbd "C-c f") 'find-file-at-point)
 
 ;; cperl-mode is preferred to perl-mode
 (defalias 'perl-mode 'cperl-mode)
@@ -151,12 +155,11 @@
 (setq ampl-auto-close-double-quote nil)
 (setq ampl-auto-close-single-quote nil)
 
-(add-to-list 'custom-theme-load-path "~/.emacs.d/lisp/emacs-color-theme-solarized")
+; (add-to-list 'custom-theme-load-path "~/.emacs.d/lisp/emacs-color-theme-solarized")
 (load-theme 'solarized)
 
 (server-start)
 
-(put 'dired-find-alternate-file 'disabled nil)
 (put 'upcase-region 'disabled nil)
 
 (add-hook 'js-mode-hook (lambda() (setq compile-command (concat "eslint --format unix " (file-name-nondirectory buffer-file-name)))))
@@ -164,3 +167,29 @@
 
 (autoload 'forth-mode "gforth.el")
 (autoload 'forth-block-mode "gforth.el")
+(put 'dired-find-alternate-file 'disabled nil)
+
+(defun ora-apt-progress-message (progress)
+  (message
+   (replace-regexp-in-string
+    "%" "%%"
+    (ansi-color-apply progress))))
+
+(defun ora-ansi-color-apply-on-region (begin end)
+  "Fix progress bars for e.g. apt(8).
+Display progress in the mode line instead."
+  (let ((end-marker (copy-marker end))
+        mb)
+    (save-excursion
+      (goto-char (copy-marker begin))
+      (while (re-search-forward "\0337" end-marker t)
+        (setq mb (match-beginning 0))
+        (when (re-search-forward "\0338" end-marker t)
+          (ora-apt-progress-message
+           (substring-no-properties
+            (delete-and-extract-region mb (point))
+            2 -2)))))))
+
+(advice-add
+ 'ansi-color-apply-on-region
+ :before 'ora-ansi-color-apply-on-region)
