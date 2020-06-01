@@ -27,8 +27,9 @@
    (quote
     ("8db4b03b9ae654d4a57804286eb3e332725c84d7cdab38463cb6b97d5762ad26" default)))
  '(frame-background-mode (quote dark))
+ '(magit-auto-revert-mode nil)
  '(menu-bar-mode nil)
- '(nxml-child-indent 4)
+ '(nxml-child-indent 2)
  '(org-src-fontify-natively t)
  '(package-archives
    (quote
@@ -36,7 +37,7 @@
      ("melpa" . "https://melpa.org/packages/"))))
  '(package-selected-packages
    (quote
-    (go-mode rust-mode ssh yaml-mode magit color-theme-solarized ada-mode ack)))
+    (2048-game toml-mode perl6-mode ssh-config-mode ack-menu go-mode rust-mode ssh yaml-mode magit color-theme-solarized ada-mode ack)))
  '(scroll-bar-mode nil)
  '(show-paren-mode t)
  '(tool-bar-mode nil)
@@ -79,6 +80,7 @@
 (global-set-key (kbd "C-/") 'comment-or-uncomment-region)
 (global-set-key (kbd "C-c o") 'browse-url-at-point)
 (global-set-key (kbd "C-c f") 'find-file-at-point)
+(global-set-key (kbd "C-c t") 'toggle-truncate-lines)
 
 ;; cperl-mode is preferred to perl-mode
 (defalias 'perl-mode 'cperl-mode)
@@ -167,7 +169,6 @@
 
 (autoload 'forth-mode "gforth.el")
 (autoload 'forth-block-mode "gforth.el")
-(put 'dired-find-alternate-file 'disabled nil)
 
 (defun ora-apt-progress-message (progress)
   (message
@@ -193,3 +194,12 @@ Display progress in the mode line instead."
 (advice-add
  'ansi-color-apply-on-region
  :before 'ora-ansi-color-apply-on-region)
+(put 'dired-find-alternate-file 'disabled nil)
+
+
+(require 'ssh)
+(add-hook 'ssh-mode-hook
+          (lambda ()
+            (setq ssh-directory-tracking-mode t)
+            (shell-dirtrack-mode t)
+            (setq dirtrackp t)))
